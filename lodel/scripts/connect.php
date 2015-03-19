@@ -153,7 +153,7 @@ function uniqueid($table)
 	global $db;
 	$db->execute("INSERT INTO {$GLOBALS['tp']}objects (class) VALUES ('{$table}')") 
 		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	return $db->insert_id();
+	return $db->insertId();
 }
 
 /**
