@@ -11,8 +11,8 @@ class LodelSql
 	public $memcacheport;
 	public $memcache;
 
-// TODO: search for these constants and change to use setFetchMode instead
-// $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
+	const FETCH_ASSOC = ADODB_FETCH_ASSOC;
+	const FETCH_NUM = ADODB_FETCH_NUM;
 
 	/**
 	 * Create a connection object to a database
@@ -79,8 +79,6 @@ class LodelSql
 	 * @param string $mode name of the encoding
 	 * @return boolean True on success, False on failure
 	 */
-	// used once lodel/scripts/connect.php:108, et avec des globals lodel/scripts/dao.php:361 …
-	// TODO: one day put that in LodelSqlStatement object
 	public function setFetchMode($mode) {
 		return $this->connectionObject->SetFetchMode($mode);
 	}
@@ -107,28 +105,24 @@ class LodelSql
 	 * Returns the number of rows affected by the last SQL statement
 	 * @return int number of rows affected by the last SQL statement
 	 */
-	// TODO: must be RENAMED to fit other method naming, but keep it for compatibility
-// lodel/scripts/dao.php:525:
-// lodel/scripts/dao.php:574:
-// lodel/scripts/logic/class.entities_advanced.php:254:
-	public function Affected_Rows() {
+	public function affectedRows() {
 		return $this->connectionObject->Affected_Rows();
+	}
+	// here for compatibility
+	public function Affected_Rows() {
+		return $this->affectedRows();
 	}
 
 	/**
 	 * Returns the ID of the last inserted row
 	 * @return int ID of the last inserted row
 	 */
-	// TODO: must be RENAMED to fit other method naming, but keep it for compatibility
-// lodel/scripts/class.siteManage.php:335:
-// lodel/scripts/connect.php:198:
-// lodel/scripts/dao.php:294:
-// lodel/scripts/logic/class.entities_edition.php:807:
-// lodel/scripts/logic/class.entities_edition.php:843:
-// lodel/scripts/logic/class.entries.php:832:
-// lodel/scripts/logic/class.tasks.php:106:
-	public function Insert_ID($table='', $column='') {
+	public function insertId($table='', $column='') {
 		return $this->connectionObject->Insert_ID($table, $column);
+	}
+	// here for compatibility
+	public function Insert_ID($table='', $column='') {
+		return $this->insertId($table, $column);
 	}
 
 	/**
@@ -138,12 +132,6 @@ class LodelSql
 	 */
 	public function quote($s) {
 		return $this->connectionObject->quote($s);
-	}
-
-	// used only once scripts/loginfunc.php:88
-	// must be DELETED and use quote() instead
-	public function qstr($s, $magic_quotes=false) {
-		return $this->connectionObject->qstr($s, $magic_quotes);
 	}
 
 	/*
@@ -156,7 +144,7 @@ class LodelSql
 	 * @param string $sql SQL query to be prepared
 	 * @return object statement object
 	 */
-	// TODO: not used in Lodel, but we should
+	// not used in Lodel, but we should
 	public function prepare($sql) {
 			return $this->connectionObject->Prepare($sql);
 	}
@@ -167,8 +155,7 @@ class LodelSql
 	 * @param mixed[] $inputarr array of insert values, placeholders or named parameters
 	 * @return object RecordSet
 	 */
-	// TODO: in lodel execute is used using a string $sql query !!!
-	// TODO: MUST return a LodelSqlStatement
+	// in lodel execute is used using a string $sql query !!!
 	public function execute($sql, $inputarr=false) {
 		$res = $this->connectionObject->execute($sql, $inputarr);
 		if($res!== false)
@@ -182,7 +169,7 @@ class LodelSql
 	 * @param mixed[] $inputarr array of insert values, placeholders or named parameters
 	 * @return object LodelSqlStatement
 	 */
-	// TODO: not used in Lodel, since execute does the same job
+	// not used in Lodel, since execute does the same job
 	public function query($sql, $inputarr=false) {
 		$res = $this->connectionObject->Query($sql, $inputarr);
 		if($res!== false)
@@ -285,11 +272,11 @@ class LodelSql
 		return $this->connectionObject->MetaDatabases();
 	}
 
-	// used only once lodel/scripts/tablefields.php:77
 	/**
 	 * Returns an array of tables for the current database as an array
 	 * @return string[] names of tables avalaible on the current database
 	 */
+	// used only once lodel/scripts/tablefields.php:77
 	public function metaTables() {
 		return $this->connectionObject->MetaTables('TABLES');
 	}
@@ -305,39 +292,8 @@ class LodelSql
 		return $this->connectionObject->MetaColumns($table, true);
 	}
 
-	// not used, to DELETE
-	public function metaPrimaryKeys($table, $owner=false) {
-		return $this->connectionObject->MetaPrimaryKeys($table, $owner);
-	}
-
-	// not used, to DELETE
-	public function metaType($t,$len=-1, $fieldobj=false) {
-		return $this->connectionObject->MetaType($t, $len, $fieldobj);
-	}
- 
-	/*
-	memcache functions, to DELETE
-	*/
-	// TODO: delete all use of these functions
-	// It is not proprely used, there is no cacheExecute() calls
-	public function cacheExecute($secs2cache, $sql=false, $inputarr=false) {
-		return $this->connectionObject->CacheExecute($secs2cache, $sql, $inputarr);
-	}
-
-	//lodel/scripts/view.php:303:
-	public function cacheFlush($sql=false, $inputarr=false) {
-		return $this->connectionObject->cacheflush($sql, $inputarr);
-	}
-
-	// TODO: test it
-	// scripts/loginfunc.php:409
-	public function cacheGetOne($secs2cache, $sql=false, $inputarr=false) {
-		return $this->connectionObject->cacheGetOne($secs2cache, $sql, $inputarr);
-	}
-
 }
 
-//TODO !!  <- DONE =P
 /**
  *  
  */
